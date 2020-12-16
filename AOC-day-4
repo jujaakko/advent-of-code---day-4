@@ -1,0 +1,71 @@
+# -*- coding: utf-8 -*-
+"""
+Created on Fri Dec 11 14:59:44 2020
+
+@author: Juhana
+"""
+
+import numpy as np
+import math
+
+with open(r"C:\Users\Juhana\Desktop\input5.txt", 'r') as file: #luetaan annettu tiedosto ja muokataan ne yksittäisiksi riveiksi
+    boarding_passes = [line.strip() for line in file]
+ 
+seat_id_table = np.zeros(len(boarding_passes))
+initial_row_numbers = []
+initial_column_numbers = []
+for i in range(0,128):
+    initial_row_numbers.append(i)
+
+for i in range(0,8):
+    initial_column_numbers.append(i)         
+
+i = 0
+
+
+for line in boarding_passes:
+    row_number = initial_row_numbers
+    start_number= 0
+    end_number= 127
+    column_number = initial_column_numbers
+    column_start_number = 0
+    column_end_number = 7
+    
+        
+    for character in line[0:7]:
+        if character == "B":
+            start_number = math.ceil(len(row_number) / 2)
+            end_number = end_number
+            row_number = row_number[start_number:end_number+1]
+        if character == "F":
+            start_number = 0
+            end_number = math.floor(len(row_number) / 2)
+            row_number = row_number[start_number:end_number]
+
+               
+    for column_character in line[7:10]:
+        if column_character == "R":
+            column_start_number = math.ceil(len(column_number) / 2)
+            column_end_number = column_end_number
+            column_number = column_number[column_start_number:column_end_number+1]
+            
+            
+        if column_character == "L":
+            column_start_number = 0
+            column_end_number = math.floor(len(column_number) / 2)
+            column_number = column_number[column_start_number:column_end_number]   
+    
+    seat_id_table[i] = row_number[0]*8 + column_number[0]
+    i = i +1
+
+max_index = np.where(seat_id_table == 894)
+min_index = np.where(seat_id_table == min(seat_id_table))
+
+for i in range(8,908):
+    index = np.where(seat_id_table == i)
+    if index[0] > 0:
+       continue
+    else:
+       print(i)
+
+print(seat_id_table[894])
